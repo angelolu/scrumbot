@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#01579B">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="icon" sizes="48x48" href="launcher-icon-1x.png">
+    <link rel="icon" sizes="96x96" href="launcher-icon-2x.png">
+    <link rel="icon" sizes="192x192" href="launcher-icon-4x.png">
+    <link rel="apple-touch-icon" href="launcher-icon-4x.png">
+    <title>ScrumBot</title>
+    
+    <!-- Bootstrap Styles -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <!-- Site Styles -->
+    <link rel="stylesheet" type="text/css" href="basic.css">
+    
+    </head>
+    <body id="bg">
+        <div class="page">
+            <div class="appbar">
+                <div id="appbar_title"><div id="appbar_text">ScrumBot</div></div>
+            </div>
+            <div id="offline_bar"><div id="offline_bar_text">Offline. Cannot load stats.</div></div>
+            <div class="container">
+                <div class="main_card">
+                    <h3 id="main_desc"></h3>
+                    <h1 id="main_title">loading data...</h1>
+                    <h4 id="main_sub"></h4>
+                </div>
+                <div class="section">
+                    <h4 class="section_title">Feed history</h4>
+                </div>
+                <div class="card">
+                    <h4 class="card_title">Today</h4>
+                    <h2 id="card_today" class="card_content">-</h2>
+                    <h4 class="main_desc">scoops</h4>
+                </div>
+                <div class="card">
+                    <h4 class="card_title">This Week</h4>
+                    <h2 id="card_week" class="card_content">-</h2>
+                    <h4 class="main_desc">scoops</h4>
+                </div>
+                <div class="section">
+                    <h4 class="section_title">Food remaining</h4>
+                </div>
+                <div class="card">
+                    <h4 class="card_title">Days</h4>
+                    <h2 id="card_days_left" class="card_content">-</h2>
+                    <h5 class="main_desc">at 4 scoops/day</h5>
+                </div>
+                <div class="small_card">
+                        <h4 class="card_title">Scoops</h4>
+                        <h2 id="card_scoops_left" class="card_content">-</h2>
+                    </div>
+                <div class="card">
+                    <h4 class="card_title">Weight</h4>
+                    <h2 id="card_weight" class="card_content">-</h2>
+                    <h4 class="main_desc">grams</h4>
+                </div>
+                <div class="footer">
+                    <a href="https://twitter.com/ScrumFeedBot">ScrumBot</a> <span id="version"></span> is a project by <a href="https://github.com/angelolu">Angelo Lu</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Firebase -->
+        <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script>
+        <!-- Main Site Script -->
+        <script type='text/javascript' src='config.js'></script>
+        <script type='text/javascript' src="basic.js"></script>
+        
+    </body>
+    </html>

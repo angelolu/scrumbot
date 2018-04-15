@@ -1,0 +1,30 @@
+{
+    "short_name": "ScrumBot",
+    "name": "ScrumBot Food Tracker",
+    "icons": [
+      {
+        "src": "launcher-icon-1x.png",
+        "type": "image/png",
+        "sizes": "48x48"
+      },
+      {
+        "src": "launcher-icon-2x.png",
+        "type": "image/png",
+        "sizes": "96x96"
+      },
+      {
+        "src": "launcher-icon-4x.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      },
+      {
+        "src": "launcher-icon-11x.png",
+        "type": "image/png",
+        "sizes": "528x528"
+      }
+    ],
+    "start_url": "index.html?launcher=true",
+    "theme_color": "#01579B",
+    "background_color": "#01579B",
+    "display": "standalone"
+  }

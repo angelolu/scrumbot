@@ -1,0 +1,155 @@
+#bg {
+    background: linear-gradient(to bottom right, #311B92, #01579B);
+    background-attachment: fixed;
+}
+
+* {
+    font-family: 'Open Sans', sans-serif;
+   }
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.container {
+    display: flex; /* or inline-flex */
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    max-width: 700px;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.main_card{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 5px;
+    margin: 5px 5px 10px 5px;
+    padding: 20px;
+    width: 100%;
+    text-align: center;
+    background: #ffffff;
+}
+
+.appbar{
+    background: #01579B;
+    box-shadow: 0 0 8px 0 rgba(0,0,0,0.5);
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+#appbar_title{
+    display: table-cell;
+    height: 56px;
+    padding-left: 25px;
+    padding-right: 10px;
+    max-width: 800px;
+    vertical-align: middle;
+}
+
+#appbar_text{
+    color: #ffffff;
+    font-size: 18px;
+    display: inline-block;
+}
+
+#offline_bar{
+    visibility: hidden;
+    height: 0;
+    background: #ff0033;
+    margin-top: 56px;
+    width: 100%;
+}
+
+#offline_bar_text{
+    color: #ffffff;
+    text-align: center;
+    padding: 5px 0 5px 0;
+    width: 100%;
+    display: inline-block;
+}
+
+#main_title{
+    font-weight: bold;
+}
+.section{
+    width: 100%;
+    margin: 5px 0px 10px 0px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.123), rgba(0, 0, 0, 0));
+}
+
+.section_title{
+    padding: 10px 40px 10px 20px;
+    float: left;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
+    transition: 0.2s;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+
+.section_title:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+
+.card, .small_card{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 5px;
+    margin: 0px 5px 10px 5px;
+    padding: 10px;
+    min-width: 150px;
+    max-width: 400px;
+    text-align: center;
+    background: #ffffff;
+    flex-grow: 1;
+    /*whatever width you want*/
+}
+
+.small_card{
+    padding: 10px 10px 20px 10px;
+}
+
+/* On mouse-over, add a deeper shadow */
+.main:hover, .card:hover, .small_card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.3);
+}
+
+.card_content{
+    font-weight: bold;
+    margin: auto;
+}
+
+.card_title {
+    font-weight: bold;
+}
+
+.h1, .h2, .h3, h1, h2, h3{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+a{
+    color: white;
+}
+.footer{
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px;
+    color: #c4c4c4;
+    background: #000000;
+    text-align: right;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+}
