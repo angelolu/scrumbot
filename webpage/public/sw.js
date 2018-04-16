@@ -1,4 +1,4 @@
-var CACHE_NAME = 'scrumbot-cache-v9';
+var CACHE_NAME = 'scrumbot-cache-v12';
 var urlsToCache = [
   '/',
   '/basic.js',

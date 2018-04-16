@@ -1,16 +1,60 @@
 // TODO: Reduce use of global variables
 
 // Write version
-document.getElementById("version").innerHTML = "v1.10";
+document.getElementById("version").innerHTML = "v1.12.3";
 
 // Initialize Firebase with config (not on github)
 firebase.initializeApp(config);
+firebase.firestore().enablePersistence()
+.then(function() {
+    // Initialize Cloud Firestore through firebase
+    var db = firebase.firestore();
+})
+.catch(function(err) {
+    if (err.code == 'failed-precondition') {
+        // Multiple tabs open, persistence can only be enabled
+        // in one tab at a a time.
+        // ...
+        console.log("Multiple tabs opened!");
+    } else if (err.code == 'unimplemented') {
+        // The current browser does not support all of the
+        // features required to enable persistence
+        // ...
+        console.log("Browser does not support offline firestore!");
+    }
+});
+
 var db = firebase.firestore();
 
-// Initializa variables
+// Initialize variables
 var feedDate = null;
 var cups = null;
 var currentcolor = 1;
+var firstOffline;
+var confirmingOffline = false;
+
+// Online/offline detection
+window.addEventListener('online', function(e) {
+    // Re-sync data with server.
+    isOffline(false);
+}, false);
+window.addEventListener('offline', function(e) {
+    // Queue up events for server.
+    isOffline(true);
+}, false);
+
+
+function isOffline(offline){
+    if(offline){
+        var offlinebar = document.getElementById('offline_bar');
+        offlinebar.style.visibility = "visible";
+        offlinebar.style.height = "auto";
+    }else{
+        var offlinebar = document.getElementById('offline_bar');
+        offlinebar.style.visibility = "hidden";
+        offlinebar.style.height = "0";
+    }
+}
 
 // Time in lastfeed is stored as GMT
 // Everywhere else on firestore it is EST
@@ -18,7 +62,7 @@ var currentcolor = 1;
 
 // Listen for feed events
 db.collection("lastfeed").doc("info")
-.onSnapshot(function(doc) {
+.onSnapshot({ includeMetadataChanges: true }, function(doc) {
     if (doc.exists) {
         timeParts = doc.data()["time"].split('-');
         feedDate = new Date(timeParts[0], timeParts[1]-1, timeParts[2], timeParts[3], timeParts[4], timeParts[5]);
@@ -28,8 +72,27 @@ db.collection("lastfeed").doc("info")
     } else {
         console.log("Could not load lastfeed/info!");
     }
+    var source = doc.metadata.fromCache ? "local cache" : "server";
+    console.log("Data came from " + source);
+    if(source == "local cache"){
+        firstOffline = setInterval(offlineDoubleCheck,1000);
+        confirmingOffline = true;
+    }else{
+        isOffline(false);
+        if(confirmingOffline) {
+            clearInterval(firstOffline);
+            confirmingOffline = false;
+        }
+    }
+    
 });
 
+function offlineDoubleCheck(){
+    console.log("And we're offline!!!");
+    isOffline(true);
+    clearInterval(firstOffline);
+    confirmingOffline = false;
+}
 // Each time new data is loaded, also retreive/calculate additional statistics
 function loadAdditonalStats(){
     // Get current date
@@ -197,7 +260,7 @@ var t = setInterval(tick,1000);
 // Initialize service worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/servw.js').then(function(registration) {
+        navigator.serviceWorker.register('/sw.js').then(function(registration) {
             // Registration was successful
             console.log('ServiceWorker registration successful with scope: ', registration.scope);
         }, function(err) {
@@ -206,19 +269,4 @@ if ('serviceWorker' in navigator) {
         });
     });
 }
-
-// Online/offline detection
-window.addEventListener('online', function(e) {
-    // Re-sync data with server.
-    var offlinebar = document.getElementById('offline_bar');
-    offlinebar.style.visibility = "hidden";
-    offlinebar.style.height = "0";
-}, false);
-
-window.addEventListener('offline', function(e) {
-    // Queue up events for server.
-    var offlinebar = document.getElementById('offline_bar');
-    offlinebar.style.visibility = "visible";
-    offlinebar.style.height = "auto";
-}, false);
 
