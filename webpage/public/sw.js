@@ -1,7 +1,6 @@
-var CACHE_NAME = 'scrumbot-cache-v12';
+var CACHE_NAME = 'scrumbot-cache-v13.4C';
 var urlsToCache = [
   '/',
-  '/basic.js',
   '/index.html',
   '/basic.css',
   'fonts.googleapis.com/css?family=Open+Sans'
@@ -12,10 +11,33 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(function(cache) {
-        console.log('Opened cache');
+        console.log('Opened cache: ' + CACHE_NAME);
         return cache.addAll(urlsToCache);
       })
   );
+});
+
+self.addEventListener('activate', function(event) {
+  // Delete all caches that aren't named in CURRENT_CACHES.
+  // While there is only one cache in this example, the same logic will handle the case where
+  // there are multiple versioned caches.
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          if (CACHE_NAME != cacheName) {
+            // If this cache name isn't present in the array of "expected" cache names, then delete it.
+            console.log('Deleting out of date cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
+addEventListener('message', messageEvent => {
+  if (messageEvent.data === 'skipWaiting') return skipWaiting();
 });
 
 self.addEventListener('fetch', function(event) {

@@ -1,7 +1,7 @@
 // TODO: Reduce use of global variables
 
 // Write version
-document.getElementById("version").innerHTML = "v1.12.3";
+document.getElementById("version").innerHTML = "v1.14";
 
 // Initialize Firebase with config (not on github)
 firebase.initializeApp(config);
@@ -36,23 +36,39 @@ var confirmingOffline = false;
 // Online/offline detection
 window.addEventListener('online', function(e) {
     // Re-sync data with server.
-    isOffline(false);
+    setBarState(1);
 }, false);
 window.addEventListener('offline', function(e) {
     // Queue up events for server.
-    isOffline(true);
+    setBarState(3);
 }, false);
 
-
-function isOffline(offline){
-    if(offline){
-        var offlinebar = document.getElementById('offline_bar');
-        offlinebar.style.visibility = "visible";
-        offlinebar.style.height = "auto";
+function setBarState(state){
+    // 1 = connected, 2 = loading, 3 = offline, 4 = loading, slow connection
+    offlineBar = document.getElementById('offline_bar');
+    offlineText = document.getElementById('offline_bar_text');
+    if(state == 1){
+        // Connected
+        offlineBar.style.visibility = "hidden";
+        offlineBar.style.height = "0";
+    }else if(state == 2){
+        // Loading
+        offlineBar.style.visibility = "visible";
+        offlineBar.style.height = "auto";
+        offlineText.innerHTML = "Refreshing data...";
+        offlineBar.style.backgroundColor  = '#f0ad4e';
+    }else if(state == 4){
+        // Loading
+        offlineBar.style.visibility = "visible";
+        offlineBar.style.height = "auto";
+        offlineText.innerHTML = "Slow connection, refreshing data...";
+        offlineBar.style.backgroundColor  = '#f0ad4e';
     }else{
-        var offlinebar = document.getElementById('offline_bar');
-        offlinebar.style.visibility = "hidden";
-        offlinebar.style.height = "0";
+        // Offline
+        offlineBar.style.visibility = "visible";
+        offlineBar.style.height = "auto";
+        offlineText.innerHTML = "Offline. Stats may be incomplete or incorrect.";
+        offlineBar.style.backgroundColor  = '#cc3300';
     }
 }
 
@@ -74,22 +90,22 @@ db.collection("lastfeed").doc("info")
     }
     var source = doc.metadata.fromCache ? "local cache" : "server";
     console.log("Data came from " + source);
-    if(source == "local cache"){
-        firstOffline = setInterval(offlineDoubleCheck,1000);
-        confirmingOffline = true;
+    /*if(source == "local cache"){
+        // firstOffline = setInterval(offlineDoubleCheck,2000);
+        //setBarState(2);
+        //confirmingOffline = true;
     }else{
-        isOffline(false);
+        setBarState(1)
         if(confirmingOffline) {
             clearInterval(firstOffline);
             confirmingOffline = false;
         }
-    }
-    
+    }*/
 });
 
 function offlineDoubleCheck(){
-    console.log("And we're offline!!!");
-    isOffline(true);
+    console.log("And we're offline/still loading?!!!");
+    setBarState(4)
     clearInterval(firstOffline);
     confirmingOffline = false;
 }
@@ -97,10 +113,9 @@ function offlineDoubleCheck(){
 function loadAdditonalStats(){
     // Get current date
     var nowDate = new Date(Date.now());
-    // Correct to UTC
-    var utc = nowDate.getTime() - (nowDate.getTimezoneOffset() * 60000);
+    
     // Get time in EST
-    nowDate = new Date(utc + (3600000*(-4)));
+    nowDate = new Date(Date.now() + nowDate.getTimezoneOffset() * 60000 + (3600000*(-4)));
     
     var logref = db.collection("feedlog"); // Where the feed history is stored
     
@@ -122,7 +137,7 @@ function loadAdditonalStats(){
     
     // Get total cups this week
     // Make a date object corresponding to sunday
-    var sunday = new Date(utc + (3600000*(-4)) - (86400000* nowDate.getDay()));
+    var sunday = new Date(Date.now() + nowDate.getTimezoneOffset() * 60000 + (3600000*(-4)) - (86400000* nowDate.getDay()));
     dateString = makeDateString(sunday);
     // Get all feed events after Sunday (this week so far)
     query = logref.where("date", ">=", dateString);
@@ -228,17 +243,32 @@ function tick(){
             }
             
             // Update the background of the page depending on how long it's been since last feed
-            if(Math.floor(elapsedTime/3600) >= 8){
+            missingCard = document.getElementById('missing_card');
+            missingSection = document.getElementById('missing_section');
+            if(Math.floor(elapsedTime/3600) >= 12){
+                if(currentcolor != 5){
+                    missingCard.style.display = "block";
+                    missingSection.style.display = "block";
+                    document.getElementById('bg').style.backgroundImage = 'linear-gradient(to bottom right, #C62828, #B71C1C)';
+                    currentcolor = 5;
+                }
+            }else if(Math.floor(elapsedTime/3600) >= 8){
                 if(currentcolor != 3){
+                    missingCard.style.display = "none";
+                    missingSection.style.display = "none";
                     document.getElementById('bg').style.backgroundImage = 'linear-gradient(to bottom right, #B71C1C, #7B1FA2)';
                     currentcolor = 3;
                 }
             }else if(Math.floor(elapsedTime/3600) >= 4){
                 if(currentcolor != 4){
+                    missingCard.style.display = "none";
+                    missingSection.style.display = "none";
                     document.getElementById('bg').style.backgroundImage = 'linear-gradient(to bottom right, #7B1FA2, #283593)';
                     currentcolor = 4;
                 }
             }else if(currentcolor != 2){
+                missingCard.style.display = "none";
+                missingSection.style.display = "none";
                 document.getElementById('bg').style.backgroundImage = 'linear-gradient(to bottom right, #311B92, #01579B)';
                 currentcolor = 2;
             }
@@ -248,6 +278,12 @@ function tick(){
         document.getElementById("main_desc").innerHTML = "";
         document.getElementById("main_title").innerHTML = "loading data...";
         document.getElementById("main_sub").innerHTML = "";
+    }
+
+    if(navigator.onLine){
+        setBarState(1);
+    }else{
+        setBarState(3);
     }
 }
 
